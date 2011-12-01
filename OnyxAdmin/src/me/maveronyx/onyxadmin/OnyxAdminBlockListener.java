@@ -6,8 +6,8 @@ public class OnyxAdminBlockListener extends BlockListener {
 
 	OnyxAdmin plugin;
 	
-	public OnyxAdminBlockListener(OnyxAdmin plugin) {
-		
+	public OnyxAdminBlockListener(OnyxAdmin instance) {
+		plugin = instance;
 	}
 
 }

@@ -1,6 +1,7 @@
 package me.maveronyx.onyxadmin;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.logging.Logger;
 
 import org.bukkit.event.Event;
@@ -13,8 +14,11 @@ public class OnyxAdmin extends JavaPlugin {
 	OnyxAdminText chat;
 	boolean messagesEnabled = true;
 	
-	ArrayList<String> frozen = new ArrayList<String>();
-	ArrayList<String> burning = new ArrayList<String>();
+	//ArrayList<String> frozen = new ArrayList<String>();
+//	ArrayList<String> burning = new ArrayList<String>();
+	
+	HashSet<String> frozen = new HashSet<String>();
+	HashSet<String> burning = new HashSet<String>();
 	
 	private final OnyxAdminPlayerListener playerListener = new OnyxAdminPlayerListener(this);
 	private final OnyxAdminBlockListener blockListener = new OnyxAdminBlockListener(this);

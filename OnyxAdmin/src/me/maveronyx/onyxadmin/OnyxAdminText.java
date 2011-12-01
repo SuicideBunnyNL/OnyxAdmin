@@ -18,12 +18,4 @@ public class OnyxAdminText{
 		plugin.getServer().broadcastMessage(msg);
 	}
 	
-	public String colorText(String msg){
-		
-		String colors[] = {"red", "blue", "green", "pink", "yellow", "aqua", "darkgreen", "navy", "white", "black", "gold"};
-		
-		
-		return msg;
-	}
-	
 }
