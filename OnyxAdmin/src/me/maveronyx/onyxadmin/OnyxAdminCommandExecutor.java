@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 public class OnyxAdminCommandExecutor implements CommandExecutor {
 
-	HashMap<String, Integer> commandMap = new HashMap<String, Integer>();
+	HashMap<String, Object> commandMap = new HashMap<String, Object>();
 	String cmdPrefix = "onyx";
 
 	public OnyxAdminCommandExecutor() {
@@ -42,46 +42,9 @@ public class OnyxAdminCommandExecutor implements CommandExecutor {
 			String cmd = command.getName().toLowerCase();
 		
 			if(commandMap.containsKey(cmd)){
-				Integer commandId = commandMap.get(cmd);
+				//Integer commandId = commandMap.get(cmd);
 				
-				switch(commandId){
-				case 1:
-					// Kick
-					break;
-				case 2:
-					// Ban
-					break;
-				case 3:
-					break;
-				case 4:
-					break;
-				case 5:
-					break;
-				case 6:
-					break;
-				case 7:
-					break;
-				case 8:
-					break;
-				case 9:
-					break;
-				case 10:
-					break;
-				case 11:
-					break;
-				case 12:
-					break;
-				case 13:
-					break;
-				case 14:
-					break;
-				case 15:
-					break;
-				case 16:
-					break;
-					
-					
-				}
+				
 				
 			}
 			
@@ -90,5 +53,5 @@ public class OnyxAdminCommandExecutor implements CommandExecutor {
 
 		return false;
 	}
-
+	
 }
