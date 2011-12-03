@@ -1,16 +1,20 @@
 package me.maveronyx.onyxadmin;
 
-import java.util.ArrayList;
+import java.io.File;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class OnyxAdmin extends JavaPlugin {
 
+	protected FileConfiguration config;
 	Logger log = Logger.getLogger("Minecraft");
+	
 	OnyxAdminText chat;
 	boolean messagesEnabled = true;
 	
@@ -20,11 +24,15 @@ public class OnyxAdmin extends JavaPlugin {
 	HashSet<String> frozen = new HashSet<String>();
 	HashSet<String> burning = new HashSet<String>();
 	
+		
 	private final OnyxAdminPlayerListener playerListener = new OnyxAdminPlayerListener(this);
 	private final OnyxAdminBlockListener blockListener = new OnyxAdminBlockListener(this);
 	
 	@Override
 	public void onEnable() {
+		
+		// Get the config
+		this.getConfig().options().copyDefaults();
 		
 		log.info("[OnyxAdmin] Starting...");
 		log.info("[OnyxAdmin] Registering events...");
@@ -46,5 +54,13 @@ public class OnyxAdmin extends JavaPlugin {
 		
 		log.info("[OnyxAdmin] Shutting down...");
 		log.info("[OnyxAdmin] Done!");
+	}
+	
+	private void setupConfigurations(){
+		File messageConfig = new File(this.getDataFolder(), "messages.yml");
+		
+		if(!messageConfig.exists()){
+			FileConfiguration conf = YamlConfiguration.loadConfiguration(messageConfig);
+		}
 	}
 }
