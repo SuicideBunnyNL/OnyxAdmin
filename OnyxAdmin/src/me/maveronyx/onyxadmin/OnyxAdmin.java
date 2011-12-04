@@ -1,25 +1,20 @@
 package me.maveronyx.onyxadmin;
 
-import java.io.File;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
 import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class OnyxAdmin extends JavaPlugin {
 
-	protected FileConfiguration config;
 	Logger log = Logger.getLogger("Minecraft");
+	Config conf;
 	
 	OnyxAdminText chat;
 	boolean messagesEnabled = true;
-	
-	//ArrayList<String> frozen = new ArrayList<String>();
-//	ArrayList<String> burning = new ArrayList<String>();
 	
 	HashSet<String> frozen = new HashSet<String>();
 	HashSet<String> burning = new HashSet<String>();
@@ -32,7 +27,7 @@ public class OnyxAdmin extends JavaPlugin {
 	public void onEnable() {
 		
 		// Get the config
-		this.getConfig().options().copyDefaults();
+		conf = new Config(this);
 		
 		log.info("[OnyxAdmin] Starting...");
 		log.info("[OnyxAdmin] Registering events...");
@@ -48,19 +43,13 @@ public class OnyxAdmin extends JavaPlugin {
 	public void onDisable() {
 		
 		// Check if messages should be broadcasted
-		if(messagesEnabled){
-			chat.broadcastServer("Plugin shutting down. Bye guys");
-		}
+//		if(messagesEnabled){
+//			chat.broadcastServer("Plugin shutting down. Bye guys");
+//		}
 		
 		log.info("[OnyxAdmin] Shutting down...");
 		log.info("[OnyxAdmin] Done!");
 	}
 	
-	private void setupConfigurations(){
-		File messageConfig = new File(this.getDataFolder(), "messages.yml");
-		
-		if(!messageConfig.exists()){
-			FileConfiguration conf = YamlConfiguration.loadConfiguration(messageConfig);
-		}
-	}
+
 }
