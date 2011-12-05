@@ -17,16 +17,11 @@ public class AdminCommands {
 	private String messages = null;
 	private HashMap<String, Integer> warnedPlayers = new HashMap<String, Integer>();
 
-	/**
-	 * Initialize the class
-	 * 
-	 * @param subCommand
-	 * @param args
-	 */
-	public AdminCommands(String subCommand, String[] args) {
 
+	public AdminCommands(){
+	
 	}
-
+	
 	/**
 	 * Adds to the warning counter of a specific player. If limit is reached, a
 	 * message is prompted to users with the proper permissions.
@@ -35,7 +30,7 @@ public class AdminCommands {
 	 * @param sender
 	 * @param message
 	 */
-	private void warnPlayer(Player player, CommandSender sender, String message) {
+	public void warnPlayer(Player player, CommandSender sender, String message) {
 		if (player.isOnline() && player.getName() != sender.getName()) {
 
 			String playerName = player.getName();
@@ -62,7 +57,7 @@ public class AdminCommands {
 	 * @param sender
 	 * @param message
 	 */
-	private void kickPlayer(Player player, CommandSender sender, String message) {
+	public void kickPlayer(Player player, CommandSender sender, String message) {
 		if (player.isOnline() && player.getName() != sender.getName()) {
 			player.kickPlayer(message);
 			Bukkit.getServer().broadcast(messages, "server.messages.kick");
@@ -76,7 +71,7 @@ public class AdminCommands {
 	 * @param sender
 	 * @param message
 	 */
-	private void banPlayer(Player player, CommandSender sender, String message) {
+	public void banPlayer(Player player, CommandSender sender, String message) {
 
 		if (player.isOnline() && player.getName() != sender.getName()) {
 			player.setBanned(true);

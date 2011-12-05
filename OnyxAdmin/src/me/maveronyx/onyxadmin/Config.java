@@ -36,8 +36,5 @@ public class Config {
 		plugin.getConfig().addDefault(path, value);
 	}
 	
-	public String getMessage(String path){
-		return plugin.getConfig().getString(path);
-	}
 	
 }
