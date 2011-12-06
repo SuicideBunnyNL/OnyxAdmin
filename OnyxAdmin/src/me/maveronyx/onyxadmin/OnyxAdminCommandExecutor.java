@@ -9,126 +9,232 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
-import com.mysql.jdbc.log.Log;
-
 public class OnyxAdminCommandExecutor implements CommandExecutor {
 
 	HashMap<String, Integer> commandMap = new HashMap<String, Integer>();
-	String cmdPrefix = "onyx";
+
 	OnyxAdmin plugin;
-	FileConfiguration config = plugin.getConfig();
+	FileConfiguration config;
 	Logger log = Logger.getLogger("Minecraft");
 	
 	public OnyxAdminCommandExecutor(OnyxAdmin instance) {
 
 		plugin = instance;
 
+		config = instance.getConfig();
+
 		// Register all commands and map them
 		commandMap.put("warn", 1);
 		commandMap.put("kick", 2);
 		commandMap.put("ban", 3);
-//		commandMap.put("freezeall", 4);
-//		commandMap.put("burnall", 5);
-//		commandMap.put("explodeall", 6);
-//		commandMap.put("freezeplayer", 7);
-//		commandMap.put("burnplayer", 8);
-//		commandMap.put("explodeplayer", 9);
-//		commandMap.put("give", 10);
-//		commandMap.put("take", 11);
-//		commandMap.put("toggletnt", 12);
-//		commandMap.put("removetnt", 13);
-//		commandMap.put("tp", 14);
-//		commandMap.put("tpall", 15);
-//		commandMap.put("togglebuild", 16);
+		commandMap.put("freeze", 4);
+		// commandMap.put("burnall", 5);
+		// commandMap.put("explodeall", 6);
+		// commandMap.put("freezeplayer", 7);
+		// commandMap.put("burnplayer", 8);
+		// commandMap.put("explodeplayer", 9);
+		// commandMap.put("give", 10);
+		// commandMap.put("take", 11);
+		// commandMap.put("toggletnt", 12);
+		// commandMap.put("removetnt", 13);
+		// commandMap.put("tp", 14);
+		// commandMap.put("tpall", 15);
+		// commandMap.put("togglebuild", 16);
 	}
 
 	@Override
-	public boolean onCommand(CommandSender sender, Command command,
-			String label, String[] args) {
+	public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
 
 		boolean cmdSuccess = false;
 		if (sender instanceof Player) {
 
-			AdminCommands adminCommands = new AdminCommands();
+			AdminCommands adminCommands = new AdminCommands(config);
 
 			String cmd = command.getName().toLowerCase();
 
+			log.info("[OnyxAdmin] Command " + cmd + " called");
+			
 			if (commandMap.containsKey(cmd)) {
 				Integer commandId = commandMap.get(cmd);
-				
-				log.info("Command: " + commandId);
-				
+
 				switch (commandId) {
 				case 1:
 
-					
-					if (args[0] != null) {
+					if (args.length > 0) {
 
-						
-						
-						Player target = plugin.getServer().getPlayer(args[0]);
+						if (args[0].equalsIgnoreCase("*")) {
 
-						if (canBePunished(target)) {
-							adminCommands.warnPlayer(target, sender,
-									config.getString("messages.player.warn"));
+							// All online players
+							Player[] targets = plugin.getServer().getOnlinePlayers();
+
+							if (targets.length > 0) {
+								for (Player target : targets) {
+									if (canBePunished(target)){
+										adminCommands.warnPlayer(target, sender, config.getString("messages.player.warn"));
+									} else {
+										log.info("No targets found");
+										if (config.getBoolean("messages.enabled")) {
+											sender.sendMessage(config.getString("messages.admin.player.offline"));
+										}
+									}
+								}
+							} 
+							return true;
+
 						} else {
-							sender.sendMessage("That player cannot be warned");
+
+							// Single player
+							Player target = plugin.getServer().getPlayer(args[0]);
+
+							if (target != null && canBePunished(target)) {
+								adminCommands.warnPlayer(target, sender, config.getString("messages.player.warn"));
+							} else {
+								if (config.getBoolean("messages.enabled")) {
+									sender.sendMessage(config.getString("messages.admin.player.offline"));
+								}
+							}
+							return true;
 						}
-					} else {
-						cmdSuccess = false;
-					}
-					cmdSuccess = true;
-					break;
+					} 
 
 				case 2:
-					if (args[0] != null) {
+					if (args.length > 0) {
 
-						Player target = plugin.getServer().getPlayer(args[0]);
+						if (args[0].equalsIgnoreCase("*")) {
 
-						if (canBePunished(target)) {
-							adminCommands.kickPlayer(target, sender,
-									config.getString("messages.player.kick"));
+							// All online players
+							Player[] targets = plugin.getServer().getOnlinePlayers();
+
+							if (targets.length > 0) {
+								for (Player target : targets) {
+									if (canBePunished(target)){
+										adminCommands.kickPlayer(target, sender, config.getString("messages.player.kick"));
+									}else {
+										log.info("No targets found");
+										if (config.getBoolean("messages.enabled")) {
+											sender.sendMessage(config.getString("messages.admin.player.offline"));
+										}
+									}
+								}
+							}
+							return true;
+
 						} else {
-							sender.sendMessage("That player cannot be kicked");
+
+							// Single player
+							Player target = plugin.getServer().getPlayer(args[0]);
+
+							if (target != null && canBePunished(target)) {
+								adminCommands.kickPlayer(target, sender, config.getString("messages.player.kick"));
+							} else {
+								if (config.getBoolean("messages.enabled")) {
+									sender.sendMessage(config.getString("messages.admin.player.offline"));
+								}
+							}
+							return true;
 						}
-					} else {
-						cmdSuccess = false;
-					}
-					cmdSuccess = true;
-					break;
+
+					} 
 					
-					
+
 				case 3:
-					if (args[0] != null) {
+					if (args.length > 0) {
 
-						Player target = plugin.getServer().getPlayer(args[0]);
+						if (args[0].equalsIgnoreCase("*")) {
 
-						if (canBePunished(target)) {
-							adminCommands.banPlayer(target, sender,
-									config.getString("messages.player.ban"));
+							// All online players
+							Player[] targets = plugin.getServer().getOnlinePlayers();
+
+							if (targets.length > 0) {
+								for (Player target : targets) {
+									if (canBePunished(target)){
+										adminCommands.banPlayer(target, sender, config.getString("messages.player.ban"));
+									}else {
+										log.info("No targets found");
+										if (config.getBoolean("messages.enabled")) {
+											sender.sendMessage(config.getString("messages.admin.player.offline"));
+										}
+									}
+								}
+							} 
+							return true;
+
 						} else {
-							sender.sendMessage("That player cannot be banned");
+
+							// Single player
+							Player target = plugin.getServer().getPlayer(args[0]);
+
+							if (target != null && canBePunished(target)) {
+								adminCommands.banPlayer(target, sender, config.getString("messages.player.ban"));
+							} else {
+								if (config.getBoolean("messages.enabled")) {
+									sender.sendMessage(config.getString("messages.admin.player.offline"));
+								}
+							}
+							return true;
 						}
-					} else {
-						cmdSuccess = false;
-					}
-					cmdSuccess = true;
-					break;
+					} 
+
+				case 4:
+					if (args.length > 0) {
+
+						if (args[0].equalsIgnoreCase("*")) {
+
+							// All online players
+							Player[] targets = plugin.getServer().getOnlinePlayers();
+
+							if (targets.length > 0) {
+								for (Player target : targets) {
+									if (canBePunished(target)){
+										adminCommands.freezePlayer(target, sender, config.getString("messages.player.freeze"));
+									}else {
+										log.info("No targets found");
+										if (config.getBoolean("messages.enabled")) {
+											sender.sendMessage(config.getString("messages.admin.player.offline"));
+										}
+									}
+								}
+							} 
+							return true;
+
+						} else {
+
+							// Single player
+							Player target = plugin.getServer().getPlayer(args[0]);
+
+							if (target != null && canBePunished(target)) {
+								adminCommands.freezePlayer(target, sender, config.getString("messages.player.freeze"));
+							} else {
+								if (config.getBoolean("messages.enabled")) {
+									sender.sendMessage(config.getString("messages.admin.player.offline"));
+								}
+							}
+							return true;
+						}
+					} 
+
 				}
 
 			}
 
 		}
 
-		return cmdSuccess;
+		return false;
 	}
 
 	private boolean canBePunished(Player player) {
-		if (player.isOnline() && !player.isBanned() && !player.isOp()) {
-			return true;
-		} else {
-			return false;
+
+		boolean exec = false;
+
+		try {
+			if (player.isOnline() && !player.isBanned() && !player.isOp()) {
+				exec = true;
+			}
+		} catch (NullPointerException e) {
+			exec = false;
 		}
+
+		return exec;
 	}
 
 }

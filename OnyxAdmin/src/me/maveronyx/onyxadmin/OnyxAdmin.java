@@ -19,7 +19,7 @@ public class OnyxAdmin extends JavaPlugin {
 	HashSet<String> frozen = new HashSet<String>();
 	HashSet<String> burning = new HashSet<String>();
 
-	private OnyxAdminCommandExecutor commandExecutor;
+	OnyxAdminCommandExecutor commandExecutor;
 	private final OnyxAdminPlayerListener playerListener = new OnyxAdminPlayerListener(
 			this);
 	private final OnyxAdminBlockListener blockListener = new OnyxAdminBlockListener(
@@ -54,6 +54,7 @@ public class OnyxAdmin extends JavaPlugin {
 		// if(messagesEnabled){
 		// chat.broadcastServer("Plugin shutting down. Bye guys");
 		// }
+		conf.saveConfig();
 
 		log.info("[OnyxAdmin] Shutting down...");
 		log.info("[OnyxAdmin] Done!");

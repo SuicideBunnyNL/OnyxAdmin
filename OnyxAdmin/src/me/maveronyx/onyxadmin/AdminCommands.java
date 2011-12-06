@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 
 /**
@@ -16,12 +17,16 @@ public class AdminCommands {
 
 	private String messages = null;
 	private HashMap<String, Integer> warnedPlayers = new HashMap<String, Integer>();
+	FileConfiguration config;
 
-
-	public AdminCommands(){
-	
+	/**
+	 * Initialize the class
+	 * @param config
+	 */
+	public AdminCommands(FileConfiguration config) {
+		this.config = config;
 	}
-	
+
 	/**
 	 * Adds to the warning counter of a specific player. If limit is reached, a
 	 * message is prompted to users with the proper permissions.
@@ -42,10 +47,12 @@ public class AdminCommands {
 				Integer totalWarnings = warnedPlayers.get(playerName);
 				totalWarnings++;
 				warnedPlayers.put(playerName, totalWarnings);
-				player.sendMessage("Warning " + totalWarnings + "/3");
+				if (config.getBoolean("messages.enabled"))
+					player.sendMessage("Warning " + totalWarnings + "/3");
 			} else if (warnedPlayers.get(playerName) == 3) {
-				Bukkit.getServer().broadcast(messages,
-						"server.messages.warning.max");
+				if (config.getBoolean("messages.enabled"))
+					Bukkit.getServer().broadcast(messages,
+							"server.messages.warning.max");
 			}
 		}
 	}
@@ -60,7 +67,8 @@ public class AdminCommands {
 	public void kickPlayer(Player player, CommandSender sender, String message) {
 		if (player.isOnline() && player.getName() != sender.getName()) {
 			player.kickPlayer(message);
-			Bukkit.getServer().broadcast(messages, "server.messages.kick");
+			if (config.getBoolean("messages.enabled"))
+				Bukkit.getServer().broadcast(messages, "server.messages.kick");
 		}
 	}
 
@@ -76,9 +84,38 @@ public class AdminCommands {
 		if (player.isOnline() && player.getName() != sender.getName()) {
 			player.setBanned(true);
 			player.kickPlayer(message);
-
-			Bukkit.getServer().broadcast(messages, "server.messages.ban");
+			if (config.getBoolean("messages.enabled"))
+				Bukkit.getServer().broadcast(messages, "server.messages.ban");
 		}
 	}
 
+	
+	public void freezePlayer(Player player, CommandSender sender, String message){
+		
+	}
+	
+	public void loopWarn(Player[] targets, CommandSender sender, String message){
+		for(Player player : targets){
+			warnPlayer(player, sender, message);
+		}
+	}
+	
+	public void loopKick(Player[] targets, CommandSender sender, String message){
+		for(Player player : targets){
+			kickPlayer(player, sender, message);
+		}
+	}
+	
+	public void loopBan(Player[] targets, CommandSender sender, String message){
+		for(Player player : targets){
+			banPlayer(player, sender, message);
+		}
+	}
+	
+	public void loopFreeze(Player[] targets, CommandSender sender, String message){
+		for(Player player : targets){
+			freezePlayer(player, sender, message);
+		}
+	}
+	
 }

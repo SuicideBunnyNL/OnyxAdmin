@@ -16,12 +16,14 @@ public class Config {
 	
 	private void initConfig(){
 		
+		addDefault("messages.enabled", true);
 		addDefault("messages.player.warn", "Warning");
 		addDefault("messages.player.kick", "Kicked player");
 		addDefault("messages.player.ban", "Banned player");
 		addDefault("messages.player.unban", "Unbanned player");
 		addDefault("messages.player.mute", "Muted player");
 		addDefault("messages.player.unmute", "Unmuted player");
+		addDefault("messages.admin.player.offline", "Cannot perform that action. Player is offline.");
 		
 		plugin.getConfig().options().copyDefaults(true);
 		plugin.saveConfig();
@@ -31,6 +33,9 @@ public class Config {
 		plugin.reloadConfig();
 	}
 	
+	public void saveConfig(){
+		plugin.saveConfig();
+	}
 	
 	private void addDefault(String path, Object value){
 		plugin.getConfig().addDefault(path, value);
