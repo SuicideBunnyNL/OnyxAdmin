@@ -1,5 +1,6 @@
 package me.maveronyx.onyxadmin;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
@@ -15,11 +16,12 @@ public class OnyxAdmin extends JavaPlugin {
 
 	OnyxAdminText chat;
 	boolean messagesEnabled = true;
-
-	HashSet<String> frozen = new HashSet<String>();
+	PluginManager pm;
 	HashSet<String> burning = new HashSet<String>();
-
+	public ArrayList<String> frozenPlayers = new ArrayList<String>();
+	
 	OnyxAdminCommandExecutor commandExecutor;
+	
 	private final OnyxAdminPlayerListener playerListener = new OnyxAdminPlayerListener(
 			this);
 	private final OnyxAdminBlockListener blockListener = new OnyxAdminBlockListener(
@@ -35,7 +37,7 @@ public class OnyxAdmin extends JavaPlugin {
 		log.info("[OnyxAdmin] Registering events...");
 
 		// Get the plugin manager
-		PluginManager pm = getServer().getPluginManager();
+		pm = getServer().getPluginManager();
 		pm.registerEvent(Event.Type.PLAYER_MOVE, playerListener,
 				Event.Priority.Normal, this);
 
@@ -43,7 +45,8 @@ public class OnyxAdmin extends JavaPlugin {
 		getCommand("warn").setExecutor(commandExecutor);
 		getCommand("kick").setExecutor(commandExecutor);
 		getCommand("ban").setExecutor(commandExecutor);
-
+		getCommand("freeze").setExecutor(commandExecutor);
+		
 		log.info("[OnyxAdmin] Done!");
 	}
 

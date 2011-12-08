@@ -14,10 +14,15 @@ commands:
       description: Ban a player.
       usage:
            /<command> [Player]
+   freeze:
+      description: Freeze a player.
+      usage:
+           /<command> [Player]
 permissions:
     onyxadmin.*:
         description: Gives access to all OnyxAdmin commands
         children:
-            onyxadmin.warn: true
-            onyxadmin.kick: true
-            onyxadmin.ban: true
+            onyxadmin.warn.*: true
+            onyxadmin.kick.*: true
+            onyxadmin.ban.*: true
+            onyxadmin.freeze.*: true

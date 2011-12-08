@@ -21,6 +21,8 @@ public class Config {
 		addDefault("messages.player.kick", "Kicked player");
 		addDefault("messages.player.ban", "Banned player");
 		addDefault("messages.player.unban", "Unbanned player");
+		addDefault("messages.player.frozen", "Froze player");
+		addDefault("messages.player.unfrozen", "Unfroze player");
 		addDefault("messages.player.mute", "Muted player");
 		addDefault("messages.player.unmute", "Unmuted player");
 		addDefault("messages.admin.player.offline", "Cannot perform that action. Player is offline.");

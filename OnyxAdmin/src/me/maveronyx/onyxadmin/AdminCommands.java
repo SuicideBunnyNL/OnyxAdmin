@@ -1,5 +1,6 @@
 package me.maveronyx.onyxadmin;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
@@ -17,14 +18,16 @@ public class AdminCommands {
 
 	private String messages = null;
 	private HashMap<String, Integer> warnedPlayers = new HashMap<String, Integer>();
+	OnyxAdmin plugin;
 	FileConfiguration config;
 
 	/**
 	 * Initialize the class
 	 * @param config
 	 */
-	public AdminCommands(FileConfiguration config) {
+	public AdminCommands(OnyxAdmin instance, FileConfiguration config) {
 		this.config = config;
+		plugin = instance;
 	}
 
 	/**
@@ -89,9 +92,22 @@ public class AdminCommands {
 		}
 	}
 
-	
+	/**
+	 * Freeze a player
+	 * 
+	 * @param player
+	 * @param sender
+	 * @param message
+	 */
 	public void freezePlayer(Player player, CommandSender sender, String message){
-		
+		if (player.isOnline() && player.getName() != sender.getName()) {
+			if(!plugin.frozenPlayers.contains(player.getDisplayName())){
+				plugin.frozenPlayers.add(player.getDisplayName());
+			}
+			else if(plugin.frozenPlayers.contains(player.getDisplayName())){
+				plugin.frozenPlayers.remove(player.getDisplayName());
+			}
+		}
 	}
 	
 	public void loopWarn(Player[] targets, CommandSender sender, String message){
