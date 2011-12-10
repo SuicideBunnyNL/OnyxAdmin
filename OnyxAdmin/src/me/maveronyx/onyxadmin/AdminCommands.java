@@ -1,9 +1,10 @@
 package me.maveronyx.onyxadmin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -16,18 +17,19 @@ import org.bukkit.entity.Player;
  */
 public class AdminCommands {
 
-	private String messages = null;
-	private HashMap<String, Integer> warnedPlayers = new HashMap<String, Integer>();
+	private HashMap<String, Integer> warnedPlayers;
 	OnyxAdmin plugin;
 	FileConfiguration config;
 
 	/**
 	 * Initialize the class
+	 * 
 	 * @param config
 	 */
 	public AdminCommands(OnyxAdmin instance, FileConfiguration config) {
 		this.config = config;
 		plugin = instance;
+		warnedPlayers = instance.warnedPlayers;
 	}
 
 	/**
@@ -45,17 +47,20 @@ public class AdminCommands {
 
 			if (!warnedPlayers.containsKey(playerName)) {
 				warnedPlayers.put(playerName, 1);
-			} else if (warnedPlayers.containsKey(playerName)
-					&& (warnedPlayers.get(playerName) < 3)) {
-				Integer totalWarnings = warnedPlayers.get(playerName);
+				if (config.getBoolean("messages.enabled") && message != "")
+					player.sendMessage(message + " " + "1/3 times");
+
+			} else if (warnedPlayers.containsKey(playerName) && (warnedPlayers.get(playerName) < 3)) {
+				int totalWarnings = warnedPlayers.get(playerName);
 				totalWarnings++;
 				warnedPlayers.put(playerName, totalWarnings);
 				if (config.getBoolean("messages.enabled"))
-					player.sendMessage("Warning " + totalWarnings + "/3");
-			} else if (warnedPlayers.get(playerName) == 3) {
-				if (config.getBoolean("messages.enabled"))
-					Bukkit.getServer().broadcast(messages,
-							"server.messages.warning.max");
+					player.sendMessage(message + " " + totalWarnings + "/3 times");
+
+				if (totalWarnings >= 3) {
+					if (config.getBoolean("messages.enabled") && message != "")
+						Bukkit.getServer().broadcast(config.getString("messages.admin.player.maxwarnings") + " " + player.getDisplayName(), "onyxadmin.warn");
+				}
 			}
 		}
 	}
@@ -71,7 +76,7 @@ public class AdminCommands {
 		if (player.isOnline() && player.getName() != sender.getName()) {
 			player.kickPlayer(message);
 			if (config.getBoolean("messages.enabled"))
-				Bukkit.getServer().broadcast(messages, "server.messages.kick");
+				Bukkit.getServer().broadcast(config.getString("messages.admin.player.kick") + " " + player.getDisplayName(), "onyxadmin.kick");
 		}
 	}
 
@@ -88,7 +93,22 @@ public class AdminCommands {
 			player.setBanned(true);
 			player.kickPlayer(message);
 			if (config.getBoolean("messages.enabled"))
-				Bukkit.getServer().broadcast(messages, "server.messages.ban");
+				Bukkit.getServer().broadcast(config.getString("messages.admin.player.ban") + " " + player.getDisplayName(), "onyxadmin.ban");
+		}
+	}
+	
+	/**
+	 * Unban a player
+	 * 
+	 * @param player
+	 * @param sender
+	 */
+	public void unbanPlayer(OfflinePlayer player, CommandSender sender) {
+
+		if (player.getName() != sender.getName() && player.isBanned()) {
+			player.setBanned(false);
+			if (config.getBoolean("messages.enabled"))
+				Bukkit.getServer().broadcast(config.getString("messages.admin.player.unban") + " " + player.getName(), "onyxadmin.unban");
 		}
 	}
 
@@ -99,39 +119,73 @@ public class AdminCommands {
 	 * @param sender
 	 * @param message
 	 */
-	public void freezePlayer(Player player, CommandSender sender, String message){
+	public void freezePlayer(Player player, CommandSender sender, String message) {
 		if (player.isOnline() && player.getName() != sender.getName()) {
-			if(!plugin.frozenPlayers.contains(player.getDisplayName())){
+			if (!plugin.frozenPlayers.contains(player.getDisplayName())) {
 				plugin.frozenPlayers.add(player.getDisplayName());
-			}
-			else if(plugin.frozenPlayers.contains(player.getDisplayName())){
+
+				if (config.getBoolean("messages.enabled"))
+					Bukkit.getServer().broadcast(config.getString("messages.admin.player.frozen") + " " + player.getDisplayName(), "onyxadmin.freeze");
+			} else if (plugin.frozenPlayers.contains(player.getDisplayName())) {
 				plugin.frozenPlayers.remove(player.getDisplayName());
+
+				if (config.getBoolean("messages.enabled"))
+					Bukkit.getServer().broadcast(config.getString("messages.admin.player.unfrozen") + " " + player.getDisplayName(), "onyxadmin.freeze");
 			}
 		}
 	}
-	
-	public void loopWarn(Player[] targets, CommandSender sender, String message){
-		for(Player player : targets){
-			warnPlayer(player, sender, message);
+
+	/**
+	 * Change the weather type
+	 * 
+	 * @param world
+	 * @param type
+	 * @param message
+	 */
+	public void setWeather(World world, String type, String message) {
+
+		if (type.equalsIgnoreCase("rain")) {
+			world.setStorm(true);
+
+			if (config.getBoolean("messages.enabled"))
+				Bukkit.getServer().broadcast(config.getString("messages.admin.world.weather") + " " + type.toUpperCase(), "onyxadmin.weather");
+		} else if (type.equalsIgnoreCase("storm")) {
+			world.setStorm(true);
+			world.setThundering(true);
+
+			if (config.getBoolean("messages.enabled"))
+				Bukkit.getServer().broadcast(config.getString("messages.admin.world.weather") + " " + type.toUpperCase(), "onyxadmin.weather");
+		} else if (type.equalsIgnoreCase("sunny")) {
+			world.setStorm(false);
+
+			if (config.getBoolean("messages.enabled"))
+				Bukkit.getServer().broadcast(config.getString("messages.admin.world.weather") + " " + type.toUpperCase(), "onyxadmin.weather");
 		}
+
 	}
 	
-	public void loopKick(Player[] targets, CommandSender sender, String message){
-		for(Player player : targets){
-			kickPlayer(player, sender, message);
-		}
-	}
 	
-	public void loopBan(Player[] targets, CommandSender sender, String message){
-		for(Player player : targets){
-			banPlayer(player, sender, message);
-		}
+	/**
+	 * Change the time
+	 * 
+	 * @param world
+	 * @param type
+	 * @param message
+	 */
+	public void setTime(World world, String type, String message) {
+
+		if (type.equalsIgnoreCase("day")) {
+			world.setTime(0);
+
+			if (config.getBoolean("messages.enabled"))
+				Bukkit.getServer().broadcast(config.getString("messages.admin.world.time") + " " + type.toUpperCase(), "onyxadmin.weather");
+		} else if (type.equalsIgnoreCase("night")) {
+			world.setTime(12000);
+
+			if (config.getBoolean("messages.enabled"))
+				Bukkit.getServer().broadcast(config.getString("messages.admin.world.time") + " " + type.toUpperCase(), "onyxadmin.weather");
+		} 
+
 	}
-	
-	public void loopFreeze(Player[] targets, CommandSender sender, String message){
-		for(Player player : targets){
-			freezePlayer(player, sender, message);
-		}
-	}
-	
+
 }

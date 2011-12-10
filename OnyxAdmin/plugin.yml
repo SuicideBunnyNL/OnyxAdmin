@@ -3,7 +3,7 @@ main: me.maveronyx.onyxadmin.OnyxAdmin
 version: 0.1
 commands:
    warn:
-      description: Warn a player. If a player is warned 3 times, he/she will be kicked.
+      description: Warn a player. If a player is warned 3 times, all admins will receive a notice.
       usage:
            /<command> [Player]
    kick:
@@ -14,15 +14,30 @@ commands:
       description: Ban a player.
       usage:
            /<command> [Player]
-   freeze:
-      description: Freeze a player.
+   unban:
+      description: Unban a player.
       usage:
            /<command> [Player]
+   freeze:
+      description: Freeze / unfreeze a player.
+      usage:
+           /<command> [Player]
+   setWeather:
+      description: Set the weather type.
+      usage:
+           /<command> [sunny|storm|rain]
+   setTime:
+      description: Set the time.
+      usage:
+           /<command> [morning|night]
 permissions:
     onyxadmin.*:
         description: Gives access to all OnyxAdmin commands
         children:
             onyxadmin.warn.*: true
             onyxadmin.kick.*: true
+            onyxadmin.unban.*: true
             onyxadmin.ban.*: true
             onyxadmin.freeze.*: true
+            onyxadmin.setTime.*: true
+            onyxadmin.setWeather.*: true

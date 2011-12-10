@@ -1,8 +1,12 @@
 package me.maveronyx.onyxadmin;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Set;
 import java.util.logging.Logger;
 
+import org.bukkit.OfflinePlayer;
+import org.bukkit.World;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -28,9 +32,9 @@ public class OnyxAdminCommandExecutor implements CommandExecutor {
 		commandMap.put("kick", 2);
 		commandMap.put("ban", 3);
 		commandMap.put("freeze", 4);
-		// commandMap.put("burnall", 5);
-		// commandMap.put("explodeall", 6);
-		// commandMap.put("freezeplayer", 7);
+		commandMap.put("setWeather", 5);
+		commandMap.put("setTime", 6);
+		commandMap.put("unban", 7);
 		// commandMap.put("burnplayer", 8);
 		// commandMap.put("explodeplayer", 9);
 		// commandMap.put("give", 10);
@@ -67,10 +71,13 @@ public class OnyxAdminCommandExecutor implements CommandExecutor {
 								// All online players
 								Player[] targets = plugin.getServer().getOnlinePlayers();
 
+								plugin.log.info("Players online: " + targets + " " + targets.length);
+								
 								if (targets.length > 0) {
 									for (Player target : targets) {
+										
 										if (canBePunished(target)) {
-											adminCommands.warnPlayer(target, sender, config.getString("messages.player.warn"));
+											adminCommands.warnPlayer(target, sender, config.getString("messages.player.warned"));
 										} else {
 											log.info("No targets found");
 											if (config.getBoolean("messages.enabled")) {
@@ -90,7 +97,7 @@ public class OnyxAdminCommandExecutor implements CommandExecutor {
 								Player target = plugin.getServer().getPlayer(args[0]);
 
 								if (target != null && canBePunished(target)) {
-									adminCommands.warnPlayer(target, sender, config.getString("messages.player.warn"));
+									adminCommands.warnPlayer(target, sender, config.getString("messages.player.warned"));
 								} else {
 									if (config.getBoolean("messages.enabled")) {
 										sender.sendMessage(config.getString("messages.admin.player.offline"));
@@ -194,7 +201,7 @@ public class OnyxAdminCommandExecutor implements CommandExecutor {
 
 				case 4:
 					if (args.length > 0) {
-log.info("WTH");
+
 						if (args[0].equalsIgnoreCase("*")) {
 							if (sender.hasPermission("onyxadmin.freeze.all")) {
 								// All online players
@@ -235,9 +242,82 @@ log.info("WTH");
 							return true;
 						}
 					}
+					
+				case 5:
+					if (args.length > 0) {
+						if (sender.hasPermission("onyxadmin.weather")) {
+							List<World> thisWorld = plugin.getServer().getWorlds();
+							
+							for(World world: thisWorld){
+								adminCommands.setWeather(world, args[0], null);
+							}
+							
+						} else {
+							sender.sendMessage("You don't have the right permissions to use that command");
+						}
+						return true;
+					}
+					
+					
+				case 6:
+					if (args.length > 0) {
+						if (sender.hasPermission("onyxadmin.time")) {
+							List<World> thisWorld = plugin.getServer().getWorlds();
+							
+							for(World world: thisWorld){
+								adminCommands.setTime(world, args[0], null);
+							}
+							
+						} else {
+							sender.sendMessage("You don't have the right permissions to use that command");
+						}
+						return true;
+					}
+					
+				case 7:
+					if (args.length > 0) {
+
+						if (args[0].equalsIgnoreCase("*")) {
+							if (sender.hasPermission("onyxadmin.unban.all")) {
+								// All online players
+								Set<OfflinePlayer> targets = plugin.getServer().getBannedPlayers();
+
+								if (!targets.isEmpty()) {
+									for (OfflinePlayer target : targets) {
+											adminCommands.unbanPlayer(target, sender);
+											
+											if (config.getBoolean("messages.enabled")) {
+												sender.sendMessage(config.getString("messages.admin.all.unbanned"));
+											}
+										}
+									}
+								}
+							} else {
+								sender.sendMessage("You don't have the right permissions to use that command");
+							}
+							return true;
+
+						} else {
+							if (sender.hasPermission("onyxadmin.unban.player")) {
+								// Single player
+								Player target = plugin.getServer().getPlayer(args[0]);
+
+								if (target != null && target.isBanned()) {
+									adminCommands.unbanPlayer(target, sender);
+								} else {
+									if (config.getBoolean("messages.enabled")) {
+										sender.sendMessage(config.getString("messages.admin.player.unbanned"));
+									}
+								}
+							} else {
+								sender.sendMessage("You don't have the right permissions to use that command");
+							}
+							return true;
+						}
+					}
 				}
 			}
-		}
+		
 		return false;
 	}
 

@@ -25,7 +25,14 @@ public class Config {
 		addDefault("messages.player.unfrozen", "Unfroze player");
 		addDefault("messages.player.mute", "Muted player");
 		addDefault("messages.player.unmute", "Unmuted player");
+		addDefault("messages.player.warned", "You've been warned");
+		
 		addDefault("messages.admin.player.offline", "Cannot perform that action. Player is offline.");
+		addDefault("messages.admin.player.maxwarnings", "The following player has been warned multiple times");
+		addDefault("messages.admin.admin.unbanned", "All players have been unbanned");
+		
+		addDefault("messages.admin.world.weather", "Weather changed to");
+		addDefault("messages.admin.world.time", "Time changed to ");
 		
 		plugin.getConfig().options().copyDefaults(true);
 		plugin.saveConfig();

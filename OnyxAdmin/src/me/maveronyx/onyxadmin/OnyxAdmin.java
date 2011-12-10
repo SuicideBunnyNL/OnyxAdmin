@@ -1,10 +1,10 @@
 package me.maveronyx.onyxadmin;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Logger;
 
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,12 +19,11 @@ public class OnyxAdmin extends JavaPlugin {
 	PluginManager pm;
 	HashSet<String> burning = new HashSet<String>();
 	public ArrayList<String> frozenPlayers = new ArrayList<String>();
+	public HashMap<String, Integer> warnedPlayers = new HashMap<String, Integer>();
 	
 	OnyxAdminCommandExecutor commandExecutor;
 	
 	private final OnyxAdminPlayerListener playerListener = new OnyxAdminPlayerListener(
-			this);
-	private final OnyxAdminBlockListener blockListener = new OnyxAdminBlockListener(
 			this);
 
 	@Override
@@ -45,7 +44,10 @@ public class OnyxAdmin extends JavaPlugin {
 		getCommand("warn").setExecutor(commandExecutor);
 		getCommand("kick").setExecutor(commandExecutor);
 		getCommand("ban").setExecutor(commandExecutor);
+		getCommand("unban").setExecutor(commandExecutor);
 		getCommand("freeze").setExecutor(commandExecutor);
+		getCommand("setWeather").setExecutor(commandExecutor);
+		getCommand("setTime").setExecutor(commandExecutor);
 		
 		log.info("[OnyxAdmin] Done!");
 	}
